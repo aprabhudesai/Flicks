@@ -1,0 +1,38 @@
+PODS:
+  - AFNetworking (2.6.3):
+    - AFNetworking/NSURLConnection (= 2.6.3)
+    - AFNetworking/NSURLSession (= 2.6.3)
+    - AFNetworking/Reachability (= 2.6.3)
+    - AFNetworking/Security (= 2.6.3)
+    - AFNetworking/Serialization (= 2.6.3)
+    - AFNetworking/UIKit (= 2.6.3)
+  - AFNetworking/NSURLConnection (2.6.3):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/NSURLSession (2.6.3):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (2.6.3)
+  - AFNetworking/Security (2.6.3)
+  - AFNetworking/Serialization (2.6.3)
+  - AFNetworking/UIKit (2.6.3):
+    - AFNetworking/NSURLConnection
+    - AFNetworking/NSURLSession
+  - KVNProgress (2.3.1)
+  - XCDYouTubeKit (2.5.3)
+
+DEPENDENCIES:
+  - AFNetworking
+  - KVNProgress
+  - XCDYouTubeKit (~> 2.5)
+
+SPEC CHECKSUMS:
+  AFNetworking: cb8d14a848e831097108418f5d49217339d4eb60
+  KVNProgress: 8167b1f19e2758290c0b6143020ed9dcbb0477a1
+  XCDYouTubeKit: 90690f9e3523735dc93b8024269d991b0cfffe78
+
+PODFILE CHECKSUM: 7eb455de15c59975eaeb729561231a0222f38ed7
+
+COCOAPODS: 1.1.1
