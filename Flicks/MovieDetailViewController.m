@@ -201,8 +201,7 @@ static float MOVIE_TOP_RATING = 350.0f;
     if (!error) {
       NSError *jsonError = nil;
       NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&jsonError];
-      
-      NSLog(@"Response: %@", responseDictionary);
+
       NSDictionary *videos = responseDictionary[@"videos"];
       NSArray *results = videos[@"results"];
       

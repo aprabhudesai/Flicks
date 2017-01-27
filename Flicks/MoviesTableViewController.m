@@ -37,6 +37,44 @@ static NSString *TOP_RATED = @"topRatedMovies";
 - (void)viewDidLoad {
   [super viewDidLoad];
   
+  self.navigationItem.title = @"Movies";
+//  self.navigationController.navigationBar.layer.backgroundColor = [[UIColor whiteColor] CGColor];
+//  self.navigationController.navigationBar.layer.shadowOffset = CGSizeMake(0.0f, 4.0f);
+//  self.navigationController.navigationBar.layer.shadowRadius = 6.0f;
+//  self.navigationController.navigationBar.layer.shadowOpacity = 0.8f;
+  
+  NSDictionary *textAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+                                  [UIColor whiteColor], NSForegroundColorAttributeName,
+                                  nil];
+  
+  NSDictionary *textSelectedAttributes = [NSDictionary dictionaryWithObjectsAndKeys:
+                                          [UIColor whiteColor], NSForegroundColorAttributeName,
+                                          [UIFont fontWithName:@"Helvetica-Bold" size:20], NSFontAttributeName,
+                                          nil];
+  
+  // Magnet Color
+  //UIColor *tintColor = [UIColor colorWithRed:0.17 green:0.24 blue:0.31 alpha:1.0];
+  
+  // Pumpkin Color
+  //UIColor *tintColor = [UIColor colorWithRed:0.83 green:0.33 blue:0.00 alpha:1.0];
+  
+  // Carrot Color
+  //UIColor *tintColor = [UIColor colorWithRed:0.90 green:0.49 blue:0.13 alpha:1.0];
+  
+  // Pomegranate Color
+  UIColor *tintColor = [UIColor colorWithRed:0.91 green:0.36 blue:0.05 alpha:1.0];
+  
+  // Set Navigation Bar Attributes
+  self.navigationController.navigationBar.titleTextAttributes = textAttributes;
+  [self.navigationController.navigationBar setBarTintColor:tintColor];
+  [self.navigationController.navigationBar setTintColor:[UIColor whiteColor]];
+  
+  [self.tabBarController.tabBar setBarTintColor:tintColor];
+  [self.tabBarController.tabBar setTintColor:[UIColor whiteColor]];
+  [self.tabBarController.tabBar setUnselectedItemTintColor:[UIColor colorWithRed:0.96 green:0.96 blue:0.96 alpha:0.5]];
+  [self.tabBarController.tabBarItem setTitleTextAttributes:textSelectedAttributes forState:UIControlStateNormal];
+  [self.tabBarController.tabBarItem setTitleTextAttributes:textSelectedAttributes forState:UIControlStateSelected];
+
   self.movieCollectionView.hidden = YES;
 
   [self createNetworkErrorView];
@@ -92,7 +130,6 @@ static NSString *TOP_RATED = @"topRatedMovies";
   
   MovieCell *cell = [tableView dequeueReusableCellWithIdentifier:@"movieCell"];
   cell.titleLabel.text = movie.title;
-  [cell.titleLabel sizeToFit];
   cell.overviewLabel.text = movie.movieDescription;
   [cell.overviewLabel sizeToFit];
   cell.posterImage.contentMode = UIViewContentModeScaleAspectFit;

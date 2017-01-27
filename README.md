@@ -22,13 +22,13 @@ The following **optional** features are implemented:
 - [x] All images fade in.
 - [x] For the large poster, load the low-res image first, switch to high-res when complete.
 - [x] Customize the highlight and selection effect of the cell.
-- [ ] Customize the navigation bar.
+- [x] Customize the navigation bar.
 - [x] Tapping on a movie poster image shows the movie poster as full screen and zoomable.
 - [x] User can tap on a button to play the movie trailer.
 
 The following **additional** features are implemented:
 
-- [ ] List anything else that you can get done to improve the app functionality!
+- [x] Customize the Tab bar and Tab bar items.
 
 ## Video Walkthrough
 
