@@ -38,7 +38,7 @@ static NSString *TOP_RATED = @"topRatedMovies";
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  
+
   self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
   
   self.searchController.searchResultsUpdater = self;
@@ -111,7 +111,7 @@ static NSString *TOP_RATED = @"topRatedMovies";
   
   self.refreshControl = [[UIRefreshControl alloc] init];
   [self.refreshControl addTarget:self action:@selector(onRefresh) forControlEvents:UIControlEventValueChanged];
-  [self.movieTableView insertSubview:self.refreshControl atIndex:0];
+  [self.movieTableView insertSubview:self.refreshControl atIndex:1];
 
   [self.viewTypeSegmentedControl addTarget:self action:@selector(onViewTypeChange) forControlEvents:UIControlEventValueChanged];
   
@@ -260,6 +260,7 @@ static NSString *TOP_RATED = @"topRatedMovies";
 
 #pragma mark - Refresh Control Methods
 - (void) onRefresh {
+  [self.refreshControl beginRefreshing];
   self.networkErrorView.hidden = YES;
   [self fetchMovies];
 }
