@@ -17,15 +17,17 @@
 static NSString *NOW_PLAYING = @"nowPlayingMovies";
 static NSString *TOP_RATED = @"topRatedMovies";
 
-@interface MoviesTableViewController () <UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface MoviesTableViewController () <UITableViewDataSource, UITableViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UISearchResultsUpdating, UISearchBarDelegate>
 
 @property (strong, nonatomic) UIView *networkErrorView;
 @property (strong, nonatomic) UIRefreshControl *refreshControl;
 @property (weak, nonatomic) IBOutlet UITableView *movieTableView;
 @property (strong, nonatomic) NSArray<MovieModel *> *moviesList;
+@property (strong, nonatomic) NSMutableArray<MovieModel *> *filteredMovies;
 @property (strong, nonatomic) NSString *type;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *viewTypeSegmentedControl;
 @property (weak, nonatomic) IBOutlet UICollectionView *movieCollectionView;
+@property (strong, nonatomic) UISearchController *searchController;
 
 - (void) fetchMovies;
 - (void) createNetworkErrorView;
@@ -36,6 +38,13 @@ static NSString *TOP_RATED = @"topRatedMovies";
 
 - (void)viewDidLoad {
   [super viewDidLoad];
+  
+  self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+  
+  self.searchController.searchResultsUpdater = self;
+  self.searchController.dimsBackgroundDuringPresentation = NO;
+  self.searchController.definesPresentationContext = YES;
+  self.movieTableView.tableHeaderView = self.searchController.searchBar;
   
   self.navigationItem.title = @"Movies";
 //  self.navigationController.navigationBar.layer.backgroundColor = [[UIColor whiteColor] CGColor];
@@ -91,6 +100,7 @@ static NSString *TOP_RATED = @"topRatedMovies";
   self.movieTableView.delegate = self;
   self.movieCollectionView.dataSource = self;
   self.movieCollectionView.delegate = self;
+  self.searchController.searchBar.delegate = self;
   
   if ([self.restorationIdentifier isEqualToString:NOW_PLAYING]) {
     self.type = @"now_playing";
@@ -117,6 +127,9 @@ static NSString *TOP_RATED = @"topRatedMovies";
 #pragma mark - Table View Methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+  if (self.searchController.active && ![self.searchController.searchBar.text isEqualToString:@""]) {
+    return self.filteredMovies.count;
+  }
   return self.moviesList.count;
 }
 
@@ -125,8 +138,13 @@ static NSString *TOP_RATED = @"topRatedMovies";
 //  UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"movieCell"];
 //  cell.textLabel.text = [self.moviesList objectAtIndex:indexPath.row];
 
-  
-  MovieModel *movie = [self.moviesList objectAtIndex:indexPath.row];
+  MovieModel *movie;
+  if (self.searchController.active && ![self.searchController.searchBar.text isEqualToString:@""]) {
+    movie = [self.filteredMovies objectAtIndex:indexPath.row];
+  }
+  else {
+    movie = [self.moviesList objectAtIndex:indexPath.row];
+  }
   
   MovieCell *cell = [tableView dequeueReusableCellWithIdentifier:@"movieCell"];
   cell.titleLabel.text = movie.title;
@@ -163,6 +181,9 @@ static NSString *TOP_RATED = @"topRatedMovies";
   UIView *bgView = [[UIView alloc] init];
   bgView.backgroundColor = [UIColor colorWithRed:(218.0/255.0) green:(235.0/255.0) blue:(250.0/255.0) alpha:0.9];
   cell.selectedBackgroundView = bgView;
+
+  [self.searchController.searchBar endEditing:YES];
+  [self.searchController setActive:NO];
 }
 
 #pragma mark - Collection View Methods
@@ -197,6 +218,18 @@ static NSString *TOP_RATED = @"topRatedMovies";
   return 1.0;
 }
 
+#pragma mark - Search Controller Methods
+- (void) filterContentForSearchText: (NSString *)searchText andScope: (NSString *) scope {
+  NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.title contains[cd] %@", searchText];
+  self.filteredMovies = [NSMutableArray arrayWithArray:[self.moviesList filteredArrayUsingPredicate:predicate]];
+  
+  [self.movieTableView reloadData];
+}
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+  [self filterContentForSearchText:searchController.searchBar.text andScope:@"All"];
+}
+
 #pragma mark - Segue
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
@@ -213,7 +246,13 @@ static NSString *TOP_RATED = @"topRatedMovies";
     selectedMovieIndexPath = [self.movieCollectionView indexPathForCell:collectionMovieCell];
   }
   
-  MovieModel *selectedMovie = self.moviesList[selectedMovieIndexPath.row];
+  MovieModel *selectedMovie;
+  if (self.searchController.active && ![self.searchController.searchBar.text isEqualToString:@""]) {
+    selectedMovie = self.filteredMovies[selectedMovieIndexPath.row];
+  }
+  else {
+    selectedMovie = self.moviesList[selectedMovieIndexPath.row];
+  }
   MovieDetailViewController *destinationController = [segue destinationViewController];
   
   destinationController.movie = selectedMovie;

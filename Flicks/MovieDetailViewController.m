@@ -41,7 +41,7 @@ static float MOVIE_TOP_RATING = 350.0f;
   self.detailContentView.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
   self.videoButton.hidden = YES;
   self.watchTrailerLabel.hidden = YES;
-  
+
   [self fetchMovieById];
   // Do any additional setup after loading the view.
   [self updateMovieDetails];
