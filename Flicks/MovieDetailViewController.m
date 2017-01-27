@@ -28,7 +28,6 @@ static float MOVIE_TOP_RATING = 350.0f;
 
 
 - (void)fetchMovieById;
-- (void)fetchMovieVideo;
 - (NSString *) getFormattedRating;
 - (NSString *) getFormattedDuration;
 
@@ -44,7 +43,6 @@ static float MOVIE_TOP_RATING = 350.0f;
   self.watchTrailerLabel.hidden = YES;
   
   [self fetchMovieById];
-  [self fetchMovieVideo];
   // Do any additional setup after loading the view.
   [self updateMovieDetails];
   
@@ -192,7 +190,7 @@ static float MOVIE_TOP_RATING = 350.0f;
 - (void) fetchMovieById {
   NSString *apiKey = @"a07e22bc18f5cb106bfe4cc1f83ad8ed";
   
-  NSString *urlString = [NSString stringWithFormat: @"https://api.themoviedb.org/3/movie/%ld?api_key=%@", (long)[self.movie.id integerValue], apiKey];
+  NSString *urlString = [NSString stringWithFormat: @"https://api.themoviedb.org/3/movie/%ld?api_key=%@&append_to_response=videos", (long)[self.movie.id integerValue], apiKey];
   
   NSURL *url = [NSURL URLWithString:urlString];
   NSURLRequest *urlRequest = [[NSURLRequest alloc] initWithURL:url];
@@ -203,35 +201,11 @@ static float MOVIE_TOP_RATING = 350.0f;
     if (!error) {
       NSError *jsonError = nil;
       NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&jsonError];
-      self.movie.duration = responseDictionary[@"runtime"];
       
-      [self updateMovieDetails];
-    }
-    else {
-      NSLog(@"Error Occurred %@", error.description);
-    }
-  }];
-  
-  [task resume];
-}
-
--(void)fetchMovieVideo {
-  NSString *apiKey = @"a07e22bc18f5cb106bfe4cc1f83ad8ed";
-  
-  NSString *urlString = [NSString stringWithFormat: @"https://api.themoviedb.org/3/movie/%ld/videos?api_key=%@", (long)[self.movie.id integerValue], apiKey];
-  
-  NSURL *url = [NSURL URLWithString:urlString];
-  NSURLRequest *urlRequest = [[NSURLRequest alloc] initWithURL:url];
-  
-  NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration] delegate:nil delegateQueue:[NSOperationQueue mainQueue]];
-  
-  NSURLSessionDataTask *task = [session dataTaskWithRequest:urlRequest completionHandler:^(NSData * _Nullable data, NSURLResponse * _Nullable response, NSError * _Nullable error) {
-    if (!error) {
-      NSError *jsonError = nil;
-      NSDictionary *responseDictionary = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&jsonError];
-      NSArray *results = responseDictionary[@"results"];
+      NSLog(@"Response: %@", responseDictionary);
+      NSDictionary *videos = responseDictionary[@"videos"];
+      NSArray *results = videos[@"results"];
       
-      NSLog(@"Results: %@", results);
       NSMutableArray *videoIdKeys = [NSMutableArray array];
       for (NSDictionary *result in results) {
         NSString *type = result[@"type"];
@@ -246,6 +220,8 @@ static float MOVIE_TOP_RATING = 350.0f;
         self.watchTrailerLabel.hidden = NO;
         self.movie.videoId = videoIdKeys[0];
       }
+
+      self.movie.duration = responseDictionary[@"runtime"];
       
       [self updateMovieDetails];
     }
